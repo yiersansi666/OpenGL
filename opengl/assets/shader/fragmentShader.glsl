@@ -38,6 +38,7 @@ uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 uniform sampler2D texture_specular3;
 
+/*
 void main()
 {
     vec3 lightDir = normalize(light.position - FragPos);
@@ -78,3 +79,10 @@ void main()
         FragColor = vec4(light.ambient * texture(material.diffuse, TexCoords).rgb, 1.0);
     }
 } 
+*/
+
+
+void main()
+{    
+    FragColor = texture(texture_diffuse1, TexCoords);
+}

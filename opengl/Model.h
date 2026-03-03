@@ -8,9 +8,8 @@
 class Model
 {
 public:
-	Model(char *path)
+	Model(const char *path)
 	{
-		textures_loaded.clear();
 		loadModel(path);
 	}
 	void Draw(Shader shader);
@@ -21,5 +20,5 @@ private:
 	void loadModel(string path);
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-	vector<Texture> loadMatrialTextures(aiMaterial *mat, aiTextureType type, string typeName);
+	vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
 };
