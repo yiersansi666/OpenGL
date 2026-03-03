@@ -1,0 +1,30 @@
+# Link文件
+Linking/
+
+# ===== Build folders =====
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# ===== VS cache =====
+.vs/
+
+# ===== Object files =====
+*.obj
+*.o
+*.pch
+*.pdb
+*.ilk
+*.exe
+*.log
+
+# ===== Temporary =====
+*.tmp
+*.autosave
+
+opengl/include/assimp/
+opengl/include/glm/
+
+opengl/include/x64/
