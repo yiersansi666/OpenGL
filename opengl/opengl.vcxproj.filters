@@ -18,6 +18,9 @@
     <Filter Include="assets\img">
       <UniqueIdentifier>{c3a8329e-d6ea-4a12-b6c2-7d5e035c5bb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\3d_obj">
+      <UniqueIdentifier>{b4a50ebb-a5d0-4a4c-930d-104c3c4bb0ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\fragmentShader.glsl">

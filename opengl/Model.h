@@ -14,6 +14,8 @@ public:
 	}
 	void Draw(Shader shader);
 private:
+	Assimp::Importer importer;
+	aiScene *scene;
 	std::vector<Texture> textures_loaded;
 	vector<Mesh> meshes;
 	string directory;

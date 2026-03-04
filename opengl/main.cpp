@@ -14,7 +14,7 @@ auto img1 = (base / "assets" / "img" / "container2.png").string();
 auto img2 = (base / "assets" / "img" / "container2_specular.png").string();
 
 // auto _3dmodel = (base / "assets" / "3d" / "backpack" / "backpack.obj").string();
-const char *_3dmodel = "E:/Documents/OpenGLCode/OpenGL_VS/opengl/assets/3d/rock/rock.obj";
+const char *_3dmodel = "D:/OpenGLCode/OpenGL/opengl/assets/3d/backpack/backpack.obj";
 
 
 const char *glErrorToString(GLenum err);
