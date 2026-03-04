@@ -8,9 +8,9 @@
 class Model
 {
 public:
-	Model(const char *path)
+	Model(std::string path)
 	{
-		loadModel(path);
+		loadModel(path.c_str());
 	}
 	void Draw(Shader shader);
 private:

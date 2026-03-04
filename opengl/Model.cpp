@@ -169,8 +169,22 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 	for (unsigned int i = 0; i < mat->GetTextureCount(type);i++)
 	{
 		aiString str;
+		str.Clear();
 		mat->GetTexture(type, i, &str);
-		std::cout << str.length << "  " << str.C_Str();
+		if (str.length > 0)
+		{
+			int j = 0;
+			while (str.data[j++] == '\0');
+			j--;
+			int index = j;
+			int index1 = 0;
+			for (index; index < str.length + j; index++)
+			{
+				std::cout << index << "  " << str.data[index] << "  " << std::endl;
+				str.data[index1++] = str.data[index];
+			}
+			memset(str.data + (str.length), 0, j);
+		}
 		bool skip = false;
 		for (unsigned int j = 0; j < textures_loaded.size(); j++)
 		{
