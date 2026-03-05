@@ -13,11 +13,9 @@ struct Light {
     vec3 direction;
     float cutOff;
     float outerCutOff;
-  
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-	
+
+    vec3 color;
+
     float constant;
     float linear;
     float quadratic;
@@ -43,23 +41,33 @@ uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 uniform sampler2D texture_specular3;
 
-uniform Material texture_specular_1;
-uniform Material texture_specular_2;
-uniform Material texture_specular_3;
+uniform Material material_specular1;
+uniform Material material_specular2;
+uniform Material material_specular3;
 
 void main()
 {
     // 点 - 光源
     vec3 lightDir = normalize(light.position - FragPos);
     // 点 - 相机
-    vec3 point_eye = FragPos - viewPos;
+    vec3 viewDir = normalize(viewPos - FragPos);
     // 光的强度 常数+一次系*distance+二次系*二次系*distance
     float _distance = distance(FragPos, light.position);
     float attenuation  = 1.0 / (light.constant + _distance * light.linear + _distance * _distance * light.quadratic);
+    
+    vec3 ambientLight = material_diffuse1.ambient * light.color;
+    vec3 norm = normalize(Normal);
+    float diff = max(dot(lightDir, norm), 0.0);
+    vec3 diffuseLight = diff * light.color;
+    vec3 reflectLight = reflect(-lightDir, Normal);
+    vec3 specularLight = pow(max(dot(reflectLight, viewDir), 0.0f),  material_specular1.shininess) * light.color;
+
+    vec3 result = (ambientLight + diffuseLight * attenuation) ;
+
 
     float theta = dot(lightDir, normalize(-light.direction));
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
     vec4 texColor = texture(texture_diffuse1, TexCoords);
-    FragColor = texColor * intensity;
+    FragColor = vec4((texColor * intensity).xyz * result + specularLight * attenuation * texture(texture_specular1, TexCoords).xyz, 1.0f) ;
 }

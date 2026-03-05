@@ -33,9 +33,9 @@ void Mesh::Draw(Shader &shader)
 
 		// now set the sampler to the correct texture unit
 		glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-		shader.setVec3((std::string("texture_ambient") + name).c_str(), textures[i].ambientColor);
-		shader.setVec3((std::string("texture_diffuse") + name).c_str(), textures[i].diffuseColor);
-		shader.setVec3((std::string("texture_specular") + name).c_str(), textures[i].specularColor);
+		//shader.setVec3((std::string("texture_ambient") + name).c_str(), textures[i].ambientColor);
+		//shader.setVec3((std::string("texture_diffuse") + name).c_str(), textures[i].diffuseColor);
+		//shader.setVec3((std::string("texture_specular") + name).c_str(), textures[i].specularColor);
 		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}

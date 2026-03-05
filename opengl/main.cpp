@@ -90,13 +90,15 @@ int main()
 				lightingShader.setVec3("material_diffuse1.ambient", ourModel.meshes[i].textures[j].ambientColor);
 				lightingShader.setVec3("material_diffuse1.diffuse", ourModel.meshes[i].textures[j].diffuseColor);
 				lightingShader.setVec3("material_diffuse1.specular", ourModel.meshes[i].textures[j].specularColor);
+				lightingShader.setFloat("material_diffuse1.shininess", ourModel.meshes[i].textures[j].shininess);
 				diffuse = true;
 			}
 			else if (specular == false && ourModel.meshes[i].textures[j].type == "texture_specular")
 			{
 				lightingShader.setVec3("material_specular1.ambient", ourModel.meshes[i].textures[j].ambientColor);
-				lightingShader.setVec3("material_specular1.diffuse", ourModel.meshes[i].textures[j].ambientColor);
+				lightingShader.setVec3("material_specular1.diffuse", ourModel.meshes[i].textures[j].diffuseColor);
 				lightingShader.setVec3("material_specular1.specular", ourModel.meshes[i].textures[j].specularColor);
+				lightingShader.setFloat("material_specular1.shininess", ourModel.meshes[i].textures[j].shininess);
 				specular = true;
 			}
 		}
@@ -115,6 +117,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightingShader.use();
+		lightingShader.setVec3("light.color", glm::vec3(1.0f));
 		lightingShader.setFloat("light.constant", 1.0f);
 		lightingShader.setFloat("light.linear", 0.09f);
 		lightingShader.setFloat("light.quadratic", 0.032f);
