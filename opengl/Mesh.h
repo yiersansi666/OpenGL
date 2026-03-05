@@ -28,6 +28,10 @@ typedef struct
 	unsigned int id;
 	string type;
 	aiString path;  // 我们储存纹理的路径用于与其它纹理进行比较
+	glm::vec3 ambientColor;
+	glm::vec3 diffuseColor;
+	glm::vec3 specularColor;
+	float shininess;
 }Texture;
 
 class Mesh {
@@ -40,7 +44,7 @@ public:
 	void Draw(Shader &shader);
 private:
 	/* 渲染数据 */
-	unsigned int VAO, VBO, EBO;
+	unsigned int VAO, VBO, EBO, Norma;
 	/* 函数 */
 	void setupMesh();
 };

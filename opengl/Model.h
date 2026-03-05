@@ -13,11 +13,11 @@ public:
 		loadModel(path.c_str());
 	}
 	void Draw(Shader shader);
+	vector<Mesh> meshes;
 private:
 	Assimp::Importer importer;
 	aiScene *scene;
 	std::vector<Texture> textures_loaded;
-	vector<Mesh> meshes;
 	string directory;
 	void loadModel(string path);
 	void processNode(aiNode *node, const aiScene *scene);

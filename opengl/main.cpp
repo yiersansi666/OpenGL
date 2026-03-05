@@ -79,6 +79,31 @@ int main()
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	lightingShader.setMat4("model", model);
 
+	bool diffuse = false;
+	bool specular = false;
+	for (int i = 0 ; i < ourModel.meshes.size(); i++)
+	{
+		for (int j = 0; j < ourModel.meshes[i].textures.size();j++)
+		{
+			if (diffuse == false && ourModel.meshes[i].textures[j].type == "texture_diffuse")
+			{
+				lightingShader.setVec3("material_diffuse1.ambient", ourModel.meshes[i].textures[j].ambientColor);
+				lightingShader.setVec3("material_diffuse1.diffuse", ourModel.meshes[i].textures[j].diffuseColor);
+				lightingShader.setVec3("material_diffuse1.specular", ourModel.meshes[i].textures[j].specularColor);
+				diffuse = true;
+			}
+			else if (specular == false && ourModel.meshes[i].textures[j].type == "texture_specular")
+			{
+				lightingShader.setVec3("material_specular1.ambient", ourModel.meshes[i].textures[j].ambientColor);
+				lightingShader.setVec3("material_specular1.diffuse", ourModel.meshes[i].textures[j].ambientColor);
+				lightingShader.setVec3("material_specular1.specular", ourModel.meshes[i].textures[j].specularColor);
+				specular = true;
+			}
+		}
+		if (specular && diffuse)
+			break;
+	}
+
 	while (!glfwWindowShouldClose(window))
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
@@ -90,6 +115,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightingShader.use();
+		lightingShader.setFloat("light.constant", 1.0f);
+		lightingShader.setFloat("light.linear", 0.09f);
+		lightingShader.setFloat("light.quadratic", 0.032f);
+		lightingShader.setVec3("light.position", camera.Position);
+		lightingShader.setVec3("light.direction", camera.Front);
+		lightingShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+		lightingShader.setFloat("light.outerCutOff", glm::cos(glm::radians(25.0f)));
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
@@ -113,11 +145,11 @@ const char *glErrorToString(GLenum err)
 {
 	switch (err)
 	{
-	case GL_INVALID_ENUM:								return "GL_INVALID_ENUM";
-	case GL_INVALID_VALUE:								return "GL_INVALID_VALUE";
-	case GL_INVALID_OPERATION:							return "GL_INVALID_OPERATION";
-	case GL_OUT_OF_MEMORY:								return "GL_OUT_OF_MEMORY";
-	case GL_INVALID_FRAMEBUFFER_OPERATION:				return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	case GL_INVALID_ENUM:					return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE:					return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION:				return "GL_INVALID_OPERATION";
+	case GL_OUT_OF_MEMORY:					return "GL_OUT_OF_MEMORY";
+	case GL_INVALID_FRAMEBUFFER_OPERATION:	return "GL_INVALID_FRAMEBUFFER_OPERATION";
 	default: return "UNKNOWN_ERROR";
 	}
 }

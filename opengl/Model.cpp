@@ -36,7 +36,9 @@ static unsigned int TextureFromFile(const char *path, const string &directory, b
 	{
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
+		return textureID;
 	}
+
 
 	return textureID;
 }
@@ -129,7 +131,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 			vector.x = mesh->mBitangents[i].x;
 			vector.y = mesh->mBitangents[i].y;
 			vector.z = mesh->mBitangents[i].z;
-
 		}
 		else
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
@@ -147,6 +148,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+
 		// 1. diffuse maps
 		vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -166,7 +168,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
 {
 	vector<Texture> textures;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type);i++)
+	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
 		str.Clear();
@@ -180,7 +182,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 			int index1 = 0;
 			for (index; index < str.length + j; index++)
 			{
-				std::cout << index << "  " << str.data[index] << "  " << std::endl;
+				// std::cout << index << "  " << str.data[index] << "  " << std::endl;
 				str.data[index1++] = str.data[index];
 			}
 			memset(str.data + (str.length), 0, j);
@@ -197,9 +199,20 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 		}
 		if (!skip)
 		{
-			// 如果纹理还没有被加载，则加载它
 			Texture texture;
-
+			aiColor3D ambientColor(1.0f, 1.0f, 1.0f);
+			aiColor3D diffuseColor(1.0f, 1.0f, 1.0f);
+			aiColor3D specularColor(1.0f, 1.0f, 1.0f);
+			mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
+			mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+			mat->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+			float shininess;
+			mat->Get(AI_MATKEY_SHININESS, shininess);
+			// 如果纹理还没有被加载，则加载它
+			texture.shininess = shininess;
+			texture.ambientColor = glm::vec3(ambientColor.r, ambientColor.g, ambientColor.b);
+			texture.diffuseColor = glm::vec3(diffuseColor.r, diffuseColor.g, diffuseColor.b);
+			texture.specularColor = glm::vec3(specularColor.r, specularColor.g, specularColor.b);
 			texture.id = TextureFromFile(str.C_Str(), directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();

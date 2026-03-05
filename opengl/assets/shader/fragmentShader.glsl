@@ -2,13 +2,14 @@
 out vec4 FragColor;
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;    
     float shininess;
 }; 
 
 struct Light {
-    vec3 position;  
+    vec3 position;
     vec3 direction;
     float cutOff;
     float outerCutOff;
@@ -22,8 +23,8 @@ struct Light {
     float quadratic;
 };
 
-in vec3 FragPos;  
-in vec3 Normal;  
+in vec3 FragPos;
+in vec3 Normal;
 in vec2 TexCoords;
   
 uniform vec3 viewPos;
@@ -34,55 +35,31 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_diffuse2;
 uniform sampler2D texture_diffuse3;
 
+uniform Material material_diffuse1;
+uniform Material material_diffuse2;
+uniform Material material_diffuse3;
+
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 uniform sampler2D texture_specular3;
 
-/*
+uniform Material texture_specular_1;
+uniform Material texture_specular_2;
+uniform Material texture_specular_3;
+
 void main()
 {
+    // 点 - 光源
     vec3 lightDir = normalize(light.position - FragPos);
-    
-    // check if lighting is inside the spotlight cone
-    float theta = dot(lightDir, normalize(-light.direction)); 
-    
-    if(theta > light.cutOff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
-    {    
-        // ambient
-        vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
-        
-        // diffuse 
-        vec3 norm = normalize(Normal);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
-        
-        // specular
-        vec3 viewDir = normalize(viewPos - FragPos);
-        vec3 reflectDir = reflect(-lightDir, norm);  
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-        vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;  
-        
-        // attenuation
-        float distance    = length(light.position - FragPos);
-        float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    // 点 - 相机
+    vec3 point_eye = FragPos - viewPos;
+    // 光的强度 常数+一次系*distance+二次系*二次系*distance
+    float _distance = distance(FragPos, light.position);
+    float attenuation  = 1.0 / (light.constant + _distance * light.linear + _distance * _distance * light.quadratic);
 
-        // ambient  *= attenuation; // remove attenuation from ambient, as otherwise at large distances the light would be darker inside than outside the spotlight due the ambient term in the else branch
-        diffuse   *= attenuation;
-        specular *= attenuation;   
-            
-        vec3 result = ambient + diffuse + specular;
-        FragColor = vec4(result, 1.0);
-    }
-    else 
-    {
-        // else, use ambient light so scene isn't completely dark outside the spotlight.
-        FragColor = vec4(light.ambient * texture(material.diffuse, TexCoords).rgb, 1.0);
-    }
-} 
-*/
-
-
-void main()
-{    
-    FragColor = texture(texture_diffuse1, TexCoords);
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    vec4 texColor = texture(texture_diffuse1, TexCoords);
+    FragColor = texColor * intensity;
 }
