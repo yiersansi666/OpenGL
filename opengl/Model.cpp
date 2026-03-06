@@ -1,6 +1,7 @@
 #include "Model.h"
 #include <filesystem>
 
+// 把全部需要的纹理照片全部读取，存放
 static unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false)
 {
 	string filename = string(path);
@@ -49,6 +50,7 @@ void Model::Draw(Shader shader)
 	{
 		meshes[i].Draw(shader);
 	}
+
 }
 
 void Model::loadModel(string path)

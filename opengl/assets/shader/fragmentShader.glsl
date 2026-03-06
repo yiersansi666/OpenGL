@@ -33,17 +33,13 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_diffuse2;
 uniform sampler2D texture_diffuse3;
 
-uniform Material material_diffuse1;
-uniform Material material_diffuse2;
-uniform Material material_diffuse3;
-
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 uniform sampler2D texture_specular3;
 
-uniform Material material_specular1;
-uniform Material material_specular2;
-uniform Material material_specular3;
+uniform vec3 texture_ambienttexture_ambient;
+uniform vec3 texture_diffusetexture_diffuse;
+uniform vec3 texture_speculartexture_specular;
 
 void main()
 {
@@ -55,12 +51,12 @@ void main()
     float _distance = distance(FragPos, light.position);
     float attenuation  = 1.0 / (light.constant + _distance * light.linear + _distance * _distance * light.quadratic);
     
-    vec3 ambientLight = material_diffuse1.ambient * light.color;
+    vec3 ambientLight = texture_ambienttexture_ambient * light.color;
     vec3 norm = normalize(Normal);
     float diff = max(dot(lightDir, norm), 0.0);
     vec3 diffuseLight = diff * light.color;
     vec3 reflectLight = reflect(-lightDir, Normal);
-    vec3 specularLight = pow(max(dot(reflectLight, viewDir), 0.0f),  material_specular1.shininess) * light.color;
+    vec3 specularLight = pow(max(dot(reflectLight, viewDir), 0.0f),  32) * light.color;
 
     vec3 result = (ambientLight + diffuseLight * attenuation) ;
 

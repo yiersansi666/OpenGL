@@ -33,20 +33,83 @@ void Mesh::Draw(Shader &shader)
 
 		// now set the sampler to the correct texture unit
 		glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-		//shader.setVec3((std::string("texture_ambient") + name).c_str(), textures[i].ambientColor);
-		//shader.setVec3((std::string("texture_diffuse") + name).c_str(), textures[i].diffuseColor);
-		//shader.setVec3((std::string("texture_specular") + name).c_str(), textures[i].specularColor);
+		shader.setVec3((std::string("texture_ambient") + name).c_str(), textures[i].ambientColor);
+		shader.setVec3((std::string("texture_diffuse") + name).c_str(), textures[i].diffuseColor);
+		shader.setVec3((std::string("texture_specular") + name).c_str(), textures[i].specularColor);
 		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 
 	// draw mesh
 	glBindVertexArray(VAO);
+	// DrawLight();
 	glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
 	glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::DrawLight()
+{
+	float data[] = {
+		// positions          // UVs
+		// Front face
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		// Back face
+		-0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		// Left face
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
+		// Right face
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+		 // Top face
+		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		 // Bottom face
+		 -0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		  0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 -0.5f, -0.5f,  0.5f,  1.0f, 0.0f
+	};
+	unsigned int indices[] = {
+	0,1,2, 0,2,3,        // front
+	4,5,6, 4,6,7,        // back
+	8,9,10, 8,10,11,     // left
+	12,13,14, 12,14,15,  // right
+	16,17,18, 16,18,19,  // top
+	20,21,22, 20,22,23   // bottom
+	};
+	GLuint vbo = 0;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, nullptr);
+
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *) (3 * sizeof(float)));
+
+	GLuint ebo = 0;
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(5.0f));
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, nullptr);
 }
 
 void Mesh::setupMesh()

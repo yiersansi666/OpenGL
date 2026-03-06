@@ -42,6 +42,7 @@ public:
 	vector<Texture> textures;
 	Mesh(vector<Vertex> vertices, vector<unsigned int>indices, vector<Texture> textures);
 	void Draw(Shader &shader);
+	void DrawLight();
 private:
 	/* 渲染数据 */
 	unsigned int VAO, VBO, EBO, Norma;

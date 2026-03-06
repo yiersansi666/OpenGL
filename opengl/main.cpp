@@ -64,7 +64,7 @@ int main()
 	}
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	// 在 glfwMakeContextCurrent 之后加上这两行
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
